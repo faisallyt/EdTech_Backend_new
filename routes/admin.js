@@ -31,7 +31,7 @@ router.post('/courses',adminMiddleware,async(req,res)=>{
         imageLink,
         price
      })
-
+     
      res.json({
         message:'Course created Succesfully',
         courseId:newCourse._id,
