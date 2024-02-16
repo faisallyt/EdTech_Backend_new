@@ -1,6 +1,8 @@
 const express=require("express");
 const userMiddleware=require("../middleware/user");
 const {User,Course}=require("../db/index");
+const jwt=require("jsonwebtoken");
+const JWT_SECRET=require("../config");
 
 const router=express.Router();
 
@@ -22,6 +24,30 @@ router.post('/signup',async (req,res)=>{
 
 });
 
+router.post('/signin',async(req,res)=>{
+    const username=req.body.username;
+    const password=req.body.password;
+
+    const user=await  User.find({
+        username:username,
+        password:password
+    })
+
+    if(user){
+        const token=jwt.sign({
+            username
+        },JWT_SECRET);
+    
+        res.json({
+            token
+        })
+    }
+    else{
+       res.json(411).json({
+        message:"Incorrect email and pass"
+       }) 
+    }
+});
 
 router.get('/courses',async (req,res)=>{
     const response= await Course.find({});
@@ -33,7 +59,7 @@ router.get('/courses',async (req,res)=>{
 
 router.post('/courses/:courseId',userMiddleware,async (req,res)=>{
      const courseId=req.params.courseId;
-     const username=req.headers.username;
+     const username=req.username;
      await User.updateOne({
             username:username
     },{

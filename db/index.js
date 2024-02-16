@@ -1,6 +1,6 @@
 const mongoose=require("mongoose");
 
-mongoose.connect('mongodb+srv://anony6905:faisald181@cluster0.zwdgraw.mongodb.net/EdTech');
+mongoose.connect('mongodb+srv://anony6905:faisald181@cluster0.zwdgraw.mongodb.net/EdTech2');
 
 const AdminSchema=new mongoose.Schema({
     username:String,

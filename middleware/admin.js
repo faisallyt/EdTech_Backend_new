@@ -1,23 +1,33 @@
-const {Admin}=require("../db/index");
+const jwt=require("jsonwebtoken");
+const {JWT_SECRET}=require("../config");
+
 
 function adminMiddleware(req,res,next){
-    const username=req.headers.username;
-    const password=req.headers.password;
+    const token=req.headers.authorization;
 
-    Admin.findOne({
-        username:username,
-        password:password
-    })
+    const words=token.split(" ");
 
-    .then(function(value){
-        if(value){
+    const jwtToken=words[1];
+    
+    try{
+        const decodedValue=jwt.verify(jwtToken,JWT_SECRET);
+    
+        if(decodedValue.username){
             next();
-        } else{
+        }
+        else{
             res.status(403).json({
-                msg:"User doesn't exist"
+                msg:"You are not authenticated",
             })
         }
-    })
+    }
+    catch(e){
+        res.json({
+            msg:"Incorrect input"
+        })
+    }
+
+
 }
 
 module.exports=adminMiddleware;
